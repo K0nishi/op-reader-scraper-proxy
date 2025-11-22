@@ -92,11 +92,36 @@ app.use((req, res, next) => {
 // ============================================
 // 6. CORS Configuration
 // ============================================
-app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
-  methods: ['GET'],
-  credentials: true
-}));
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    
+    const allowedPatterns = [
+      // Main site
+      /^https:\/\/op-reader-scraper\.netlify\.app$/,
+      
+      // Branch deploys
+      /^https:\/\/[a-zA-Z0-9-]+--op-reader-scraper\.netlify\.app$/,
+      
+      // Localhost
+      /^http:\/\/localhost:\d+$/,
+      /^http:\/\/127\.0\.0\.1:\d+$/
+    ];
+    
+    const isAllowed = allowedPatterns.some(pattern => pattern.test(origin));
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.warn(`Blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'HEAD', 'OPTIONS']
+};
+
+app.use(cors(corsOptions));
 
 // ============================================
 // 7. CHECK CHAPTER/PAGE EXISTENCE (Lightweight)
