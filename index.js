@@ -9,14 +9,17 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Track bandwidth usage
+let bandwidthUsed = 0;
+const BANDWIDTH_LIMIT = 95 * 1024 * 1024 * 1024; // 95 GB (leave buffer)
+
+// Trust the first proxy
+app.set('trust proxy', 1); // Trust first proxy
+
 // ============================================
 // 1. CACHING LAYER
 // ============================================
 const imgCache = new NodeCache({ stdTTL: 86400, checkperiod: 3600 });
-
-// Track bandwidth usage
-let bandwidthUsed = 0;
-const BANDWIDTH_LIMIT = 95 * 1024 * 1024 * 1024; // 95 GB (leave buffer)
 
 // ============================================
 // 2. RATE LIMITING - Source Website
@@ -34,9 +37,8 @@ const userLimiter = rateLimit({
   max: 50, // Limit each IP to 50 requests per 15 minutes
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
-
 
 // ============================================
 // 4. API KEY AUTHENTICATION (Optional but Recommended)
