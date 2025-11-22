@@ -53,6 +53,9 @@ const apiKeyMiddleware = (req, res, next) => {
   }
 
   if (!apiKey || apiKey !== validApiKey) {
+    console.log(`Received invalid API key: ${apiKey}`);
+    console.log(`Expected API key: ${validApiKey}`);
+    
     return res.status(401).json({ error: 'Unauthorized: Invalid API Key' });
   }
 
