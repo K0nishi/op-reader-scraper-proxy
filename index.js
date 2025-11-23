@@ -132,7 +132,6 @@ app.use(cors(corsOptions));
 app.head('/api/proxy/:chapter/:page',
   userLimiter,
   bandwidthMiddleware,
-  apiKeyMiddleware,
   async (req, res) => {
     const { chapter, page } = req.params;
 
@@ -191,7 +190,6 @@ app.head('/api/proxy/:chapter/:page',
 // ============================================
 app.get('/api/proxy/:chapter/:page', 
   bandwidthMiddleware,   // Check bandwidth
-  apiKeyMiddleware,      // Check API key (if enabled)
   async (req, res) => {
     const { chapter, page } = req.params;
 
