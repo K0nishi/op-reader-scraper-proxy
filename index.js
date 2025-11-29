@@ -213,6 +213,7 @@ app.get('/api/proxy/:chapter/:page',
     // A. Check Cache (Fast Path)
     const cachedData = imgCache.get(cacheKey);
     if (cachedData) {
+      console.log(`Cache hit for chapter ${chapter}, page ${formattedPage}`);
       if (cachedData === '404') {
         return res.status(404).json({ error: 'Not Found' });
       }
@@ -227,6 +228,7 @@ app.get('/api/proxy/:chapter/:page',
     const sourceUrl = `https://mangamoins.com/files/scans/OP${chapter}/${formattedPage}.png`;
 
     try {
+      console.log(`Proxying request to: ${sourceUrl}`);
       const response = await limiter.schedule(() => axios.get(sourceUrl, {
         responseType: 'arraybuffer',
         headers: {
