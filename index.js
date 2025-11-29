@@ -142,7 +142,7 @@ app.head('/api/proxy/:chapter/:page',
 
     // Validate chapter range
     const chapterNum = parseInt(chapter);
-    if (chapterNum < 1047 || chapterNum > 1166) {
+    if (chapterNum < 1047) {
       return res.status(400).end();
     }
 
